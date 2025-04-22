@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "reUxqWXygDQ7khhRekH322PhMfxajPuYS/S4Z4Uz/GM=",
+  "Source": "SggApp.API",
+  "BasePath": "_content/SggApp.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

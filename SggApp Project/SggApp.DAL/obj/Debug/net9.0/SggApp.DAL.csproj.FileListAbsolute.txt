@@ -1,0 +1,14 @@
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\bin\Debug\net9.0\SggApp.DAL.deps.json
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\bin\Debug\net9.0\SggApp.DAL.runtimeconfig.json
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\bin\Debug\net9.0\SggApp.DAL.dll
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\bin\Debug\net9.0\SggApp.DAL.pdb
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.csproj.AssemblyReference.cache
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.AssemblyInfoInputs.cache
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.AssemblyInfo.cs
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.csproj.CoreCompileInputs.cache
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.dll
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\refint\SggApp.DAL.dll
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.pdb
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\SggApp.DAL.genruntimeconfig.cache
+C:\Users\luish\OneDrive\Documents\Herramientas de Programacion III\SggApp Project\SggApp.DAL\obj\Debug\net9.0\ref\SggApp.DAL.dll
