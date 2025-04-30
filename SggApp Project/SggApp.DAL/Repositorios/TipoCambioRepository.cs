@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SggApp.DAL.Data;
 using SggApp.DAL.Entidades;
 
+
 namespace SggApp.DAL.Repositorios
 {
     public class TipoCambioRepository : GenericRepository<TipoCambio>
@@ -33,6 +34,14 @@ namespace SggApp.DAL.Repositorios
                        tc.MonedaDestinoId == monedaDestinoId)
                 .OrderByDescending(tc => tc.FechaActualizacion)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<TipoCambio?> GetByMonedasAsync(int monedaOrigen, int monedaDestino)
+        {
+            return await _context.TiposCambio
+                .FirstOrDefaultAsync(tc =>
+                    tc.MonedaOrigen.Id == monedaOrigen &&
+                    tc.MonedaDestino.Id == monedaDestino);
         }
     }
 }

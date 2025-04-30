@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using SggApp.BLL.Interfaces;
+using SggApp.BLL.Servicios;
 using SggApp.DAL;
 using SggApp.DAL.Data;
+using SggApp.DAL.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Registro del UnitOfWork como servicio con ámbito
 builder.Services.AddScoped<UnitOfWork>();
 
+// Registro de repositorios
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<GastoRepository>();
+builder.Services.AddScoped<CategoriaRepository>();
+builder.Services.AddScoped<MonedaRepository>();
+builder.Services.AddScoped<PresupuestoRepository>();
+builder.Services.AddScoped<TipoCambioRepository>();
+
+// Registro de servicios
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IGastoService, GastoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IMonedaService, MonedaService>();
+builder.Services.AddScoped<IPresupuestoService, PresupuestoService>();
+builder.Services.AddScoped<ITipoCambioService, TipoCambioService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
