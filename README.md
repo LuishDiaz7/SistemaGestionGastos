@@ -68,8 +68,13 @@ Además, el script incluye tres consultas básicas:
 -- Ver todas las monedas
 SELECT * FROM Monedas;
 
+
 -- Ver los usuarios registrados
 SELECT * FROM Usuarios;
 
 -- Ver las categorías del usuario con ID 2
 SELECT * FROM Categorias WHERE UsuarioId = 2;
+
+```
+- Explicación de la implementación de la Capa de Acceso a Datos (DALL): https://share.vidyard.com/watch/hBVHBKsxHS88jtktbyvs7Y
+- Explicación de la implementación de la Capa de Lógica de Negocio (BLL): https://share.vidyard.com/watch/ViGFD4o8SiwTJtMbz3GCP4
