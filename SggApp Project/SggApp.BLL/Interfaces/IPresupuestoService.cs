@@ -20,5 +20,7 @@ namespace SggApp.BLL.Interfaces
         Task AgregarAsync(Presupuesto presupuesto);
         Task ActualizarAsync(Presupuesto presupuesto);
         Task EliminarAsync(int id);
+        Task<IEnumerable<Presupuesto>> ObtenerActivosPorUsuarioAsync(int userId);
+
     }
 }

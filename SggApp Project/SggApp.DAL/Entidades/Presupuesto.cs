@@ -18,6 +18,7 @@ namespace SggApp.DAL.Entidades
         public int? NotificarAl { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
+        public bool Activo { get; set; }
         // Relaciones
         public Usuario Usuario { get; set; }
         public Categoria Categoria { get; set; }

@@ -1,0 +1,70 @@
+﻿@model SggApp.Models.GastoViewModel
+@{
+    ViewData["Title"] = "Eliminar Gasto";
+}
+
+<div class="container mt-4">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> ¡Atención!</h4>
+        <p>¿Estás seguro de que deseas eliminar este gasto?</p>
+        <hr>
+        <p class="mb-0">Esta acción no se puede deshacer.</p>
+    </div>
+
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h3 class="card-title"><i class="bi bi-trash-fill"></i> Detalles del Gasto</h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.Fecha)</dt>
+                <dd class="col-sm-8 col-md-9">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.CategoriaNombre)</dt>
+                <dd class="col-sm-8 col-md-9">@Model.CategoriaNombre</dd>
+
+                <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.Descripcion)</dt>
+                <dd class="col-sm-8 col-md-9">@Model.Descripcion</dd>
+
+                <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.Monto)</dt>
+                <dd class="col-sm-8 col-md-9">@Model.Monto.ToString("C2")</dd>
+
+                <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.MonedaCodigo)</dt>
+                <dd class="col-sm-8 col-md-9">@Model.MonedaCodigo</dd>
+
+                @if (!string.IsNullOrEmpty(Model.Lugar))
+                {
+                    <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.Lugar)</dt>
+                    <dd class="col-sm-8 col-md-9">@Model.Lugar</dd>
+                }
+
+                <dt class="col-sm-4 col-md-3">@Html.DisplayNameFor(model => model.EsRecurrente)</dt>
+                <dd class="col-sm-8 col-md-9">
+                    @if (Model.EsRecurrente)
+                    {
+                        <span class="badge bg-success">Sí</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver al listado
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash-fill"></i> Confirmar Eliminación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

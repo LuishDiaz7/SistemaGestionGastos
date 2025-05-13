@@ -1,6 +1,8 @@
-﻿using SggApp.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SggApp.BLL.Interfaces;
+using SggApp.DAL.Data; 
 using SggApp.DAL.Entidades;
-using SggApp.DAL.Repositorios;
+using SggApp.DAL.Repositorios; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +11,15 @@ using System.Threading.Tasks;
 
 namespace SggApp.BLL.Servicios
 {
-    public class MonedaService : IMonedaService
+    public class MonedaService : IMonedaService 
     {
         private readonly MonedaRepository _monedaRepository;
+        private readonly ApplicationDbContext _context; 
 
-        public MonedaService(MonedaRepository monedaRepository)
+        public MonedaService(MonedaRepository monedaRepository, ApplicationDbContext context) 
         {
             _monedaRepository = monedaRepository;
+            _context = context; 
         }
 
         public async Task<IEnumerable<Moneda>> ObtenerTodasAsync()
@@ -69,7 +73,46 @@ namespace SggApp.BLL.Servicios
             {
                 moneda.Activa = false;
                 _monedaRepository.Update(moneda);
+
             }
+        }
+
+        public async Task<bool> EliminarAsync(int id)
+        {
+            if (await MonedaTieneRegistrosAsociadosAsync(id))
+            {
+                return false;
+            }
+
+            var monedaToDelete = await _monedaRepository.GetByIdAsync(id);
+
+            if (monedaToDelete == null)
+            {
+                return false;
+            }
+
+            _monedaRepository.Delete(monedaToDelete);
+
+            await _context.SaveChangesAsync(); 
+
+            return true; 
+        }
+
+
+        public async Task<bool> MonedaTieneRegistrosAsociadosAsync(int monedaId)
+        {
+            return await _context.Gastos.AnyAsync(g => g.MonedaId == monedaId) ||
+                   await _context.Presupuestos.AnyAsync(p => p.MonedaId == monedaId) ||
+                   await _context.Users.AnyAsync(u => u.MonedaPredeterminadaId == monedaId);
+        }
+
+        public async Task<int> ContarRegistrosAsociadosAsync(int monedaId)
+        {
+            var gastos = await _context.Gastos.CountAsync(g => g.MonedaId == monedaId);
+            var presupuestos = await _context.Presupuestos.CountAsync(p => p.MonedaId == monedaId);
+            var usuarios = await _context.Users.CountAsync(u => u.MonedaPredeterminadaId == monedaId);
+
+            return gastos + presupuestos + usuarios;
         }
     }
 }

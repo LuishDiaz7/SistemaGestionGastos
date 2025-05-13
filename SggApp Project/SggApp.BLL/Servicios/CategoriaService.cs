@@ -1,4 +1,5 @@
 ﻿using SggApp.BLL.Interfaces;
+using SggApp.DAL;
 using SggApp.DAL.Entidades;
 using SggApp.DAL.Repositorios;
 using System;
@@ -13,11 +14,13 @@ namespace SggApp.BLL.Servicios
     {
         private readonly CategoriaRepository _categoriaRepository;
         private readonly GastoRepository _gastoRepository;
+        private readonly UnitOfWork _unitOfWork;
 
-        public CategoriaService(CategoriaRepository categoriaRepository, GastoRepository gastoRepository)
+        public CategoriaService(CategoriaRepository categoriaRepository, GastoRepository gastoRepository, UnitOfWork unitOfWork)
         {
             _categoriaRepository = categoriaRepository;
             _gastoRepository = gastoRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<Categoria>> ObtenerTodasAsync()
@@ -42,6 +45,7 @@ namespace SggApp.BLL.Servicios
                 throw new ArgumentException("Ya existe una categoría con este nombre para el usuario.");
 
             await _categoriaRepository.AddAsync(categoria);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task ActualizarAsync(Categoria categoria)
@@ -56,6 +60,8 @@ namespace SggApp.BLL.Servicios
                 throw new ArgumentException("Ya existe una categoría con este nombre para el usuario.");
 
             _categoriaRepository.Update(categoria);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task EliminarAsync(int id)
@@ -69,6 +75,7 @@ namespace SggApp.BLL.Servicios
                     throw new InvalidOperationException("No se puede eliminar la categoría porque tiene gastos asociados.");
 
                 _categoriaRepository.Delete(categoria);
+                await _unitOfWork.SaveChangesAsync();
             }
         }
 

@@ -16,6 +16,14 @@ namespace SggApp.DAL.Repositorios
         {
 
         }
+        public async Task<IEnumerable<Gasto>> GetByUsuarioYRangoFechaAsync(int userId, DateTime startDate, DateTime endDate)
+        {
+            // Aquí es donde se realiza la consulta a la base de datos
+            // Filtra por UsuarioId y por el rango de fechas (inclusive)
+            return await _context.Gastos
+                .Where(g => g.UsuarioId == userId && g.Fecha >= startDate && g.Fecha <= endDate)
+                .ToListAsync(); // Convierte los resultados a una lista asíncronamente
+        }
 
         // Método específico: Obtener gastos de un usuario
         public async Task<IEnumerable<Gasto>> GetByUsuarioIdAsync(int usuarioId)

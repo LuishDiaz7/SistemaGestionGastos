@@ -18,5 +18,9 @@ namespace SggApp.BLL.Interfaces
         Task AgregarAsync(Gasto gasto);
         Task ActualizarAsync(Gasto gasto);
         Task EliminarAsync(int id);
+        Task<IEnumerable<Gasto>> ObtenerPorUsuarioYRangoFechaAsync(int userId, DateTime fechaInicio, DateTime fechaFin);
+        Task<IEnumerable<Gasto>> ObtenerRecientesPorUsuarioAsync(int userId, int cantidad);
+
+
     }
 }

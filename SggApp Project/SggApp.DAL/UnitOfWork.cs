@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SggApp.DAL;
 using SggApp.DAL.Data;
 using SggApp.DAL.Repositorios;
 

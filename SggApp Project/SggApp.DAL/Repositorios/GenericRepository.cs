@@ -41,18 +41,21 @@ namespace SggApp.DAL.Repositorios
         public virtual async Task AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
         // Actualizar un registro existente
         public virtual void Update(TEntity entity)
         {
             _dbSet.Update(entity);
+            _context.SaveChanges();
         }
 
         // Eliminar un registro
         public virtual void Delete(TEntity entity)
         {
             _dbSet.Remove(entity);
+            _context.SaveChanges();
         }
 
         // Verificar si existe un registro según una condición

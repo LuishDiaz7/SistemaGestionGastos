@@ -1,0 +1,103 @@
+﻿@model IEnumerable<SggApp.Models.PresupuestoViewModel>
+@{
+    ViewData["Title"] = "Gestión de Presupuestos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-pie-chart me-2"></i>@ViewData["Title"]</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Presupuesto
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Período</th>
+                            <th class="text-end">Límite</th>
+                            <th class="text-end">Gastado</th>
+                            <th class="text-end">Disponible</th>
+                            <th>Progreso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var porcentajeUtilizado = Math.Min(item.PorcentajeUtilizado, 100);
+                            var alertClass = porcentajeUtilizado >= (item.NotificarAl ?? 100) ? "bg-warning" : "bg-success";
+
+                            <tr>
+                                <td>
+                                    @if (item.CategoriaNombre != null)
+                                    {
+                                        <span class="badge bg-primary">@item.CategoriaNombre</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">General</span>
+                                    }
+                                </td>
+                                <td>
+                                    <small>@item.FechaInicio.ToString("dd MMM") - @item.FechaFin.ToString("dd MMM yyyy")</small>
+                                </td>
+                                <td class="text-end fw-bold">
+                                    @item.Limite.ToString("C2") <span class="text-muted">@item.MonedaCodigo</span>
+                                </td>
+                                <td class="text-end @(item.MontoGastado > item.Limite ? "text-danger" : "")">
+                                    @item.MontoGastado.ToString("C2")
+                                </td>
+                                <td class="text-end @((item.Limite - item.MontoGastado) < 0 ? "text-danger" : "text-success")">
+                                    @((item.Limite - item.MontoGastado).ToString("C2"))
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar @alertClass"
+                                             role="progressbar"
+                                             style="width: @porcentajeUtilizado%"
+                                             aria-valuenow="@porcentajeUtilizado"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                            @Math.Round(porcentajeUtilizado, 1)%
+                                        </div>
+                                    </div>
+                                    @if (item.NotificarAl.HasValue)
+                                    {
+                                        <small class="text-muted">Alerta al @item.NotificarAl%</small>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .progress-bar {
+            transition: width 0.6s ease;
+            min-width: 30px;
+        }
+    </style>
+}

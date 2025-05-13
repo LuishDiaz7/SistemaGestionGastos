@@ -1,4 +1,5 @@
 ﻿using SggApp.BLL.Interfaces;
+using SggApp.DAL;
 using SggApp.DAL.Entidades;
 using SggApp.DAL.Repositorios;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace SggApp.BLL.Servicios
 {
@@ -20,6 +22,14 @@ namespace SggApp.BLL.Servicios
         {
             _gastoRepository = gastoRepository;
             _tipoCambioService = tipoCambioService;
+        }
+
+        public async Task<IEnumerable<Gasto>> ObtenerRecientesPorUsuarioAsync(int userId, int cantidad)
+        {
+
+            var gastos = await _gastoRepository.GetByUsuarioIdAsync(userId);
+
+            return gastos.OrderByDescending(g => g.FechaRegistro).Take(cantidad);
         }
 
         public async Task<IEnumerable<Gasto>> ObtenerTodosAsync()
@@ -99,6 +109,12 @@ namespace SggApp.BLL.Servicios
             {
                 _gastoRepository.Delete(gasto);
             }
+        }
+        public async Task<IEnumerable<Gasto>> ObtenerPorUsuarioYRangoFechaAsync(int userId, DateTime fechaInicio, DateTime fechaFin)
+        {
+            // Llama al método correspondiente en tu GastoRepository para obtener los gastos
+            // Asegúrate de que tu GastoRepository tenga un método que permita filtrar por usuario y rango de fechas
+            return await _gastoRepository.GetByUsuarioYRangoFechaAsync(userId, fechaInicio, fechaFin);
         }
     }
 }

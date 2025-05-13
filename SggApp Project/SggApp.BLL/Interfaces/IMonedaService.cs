@@ -16,5 +16,8 @@ namespace SggApp.BLL.Interfaces
         Task AgregarAsync(Moneda moneda);
         Task ActualizarAsync(Moneda moneda);
         Task DesactivarAsync(int id);
+        Task<bool> MonedaTieneRegistrosAsociadosAsync(int monedaId);
+        Task<int> ContarRegistrosAsociadosAsync(int monedaId);
+        Task<bool> EliminarAsync(int id);
     }
 }

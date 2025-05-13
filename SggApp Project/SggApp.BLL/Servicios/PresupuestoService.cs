@@ -1,4 +1,7 @@
-﻿using SggApp.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SggApp.BLL.Interfaces;
+using SggApp.DAL;
+using SggApp.DAL.Data;
 using SggApp.DAL.Entidades;
 using SggApp.DAL.Repositorios;
 using System;
@@ -14,6 +17,7 @@ namespace SggApp.BLL.Servicios
         private readonly PresupuestoRepository _presupuestoRepository;
         private readonly GastoRepository _gastoRepository;
         private readonly ITipoCambioService _tipoCambioService;
+        private readonly ApplicationDbContext _context;
 
         public PresupuestoService(
             PresupuestoRepository presupuestoRepository,
@@ -33,6 +37,7 @@ namespace SggApp.BLL.Servicios
         public async Task<Presupuesto> ObtenerPorIdAsync(int id)
         {
             return await _presupuestoRepository.GetByIdAsync(id);
+
         }
 
         public async Task<IEnumerable<Presupuesto>> ObtenerPorUsuarioAsync(int usuarioId)
@@ -149,6 +154,11 @@ namespace SggApp.BLL.Servicios
             {
                 _presupuestoRepository.Delete(presupuesto);
             }
+        }
+
+        public async Task<IEnumerable<Presupuesto>> ObtenerActivosPorUsuarioAsync(int userId)
+        {
+            return await _presupuestoRepository.GetByConditionAsync(p => p.UsuarioId == userId && p.Activo);
         }
     }
 }
