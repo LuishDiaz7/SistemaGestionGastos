@@ -1,4 +1,64 @@
-﻿@page
-@model SggApp.Views.Gastos.DetailsModel
+﻿@model SggApp.Models.GastoViewModel
+
 @{
+    ViewData["Title"] = "Detalles del Gasto";
 }
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">@ViewData["Title"]</h1>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                @* Definition List para mostrar datos *@
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Fecha)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.CategoriaNombre)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.CategoriaNombre)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Monto)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Monto)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.MonedaCodigo)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.MonedaCodigo)
+                </dd>
+
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            @* Botones en el pie de la tarjeta *@
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Volver a la Lista
+            </a>
+        </div>
+    </div>
+</div>
+

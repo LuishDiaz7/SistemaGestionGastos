@@ -8,52 +8,56 @@ using SggApp.DAL.Repositorios;
 using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using SggApp.Services; 
-using Microsoft.AspNetCore.Identity.UI.Services; 
+using SggApp.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
+// Crea el constructor de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
 
-// --- CONFIGURACI�N DE SERVICIOS (builder.Services) ---
+// --- Configuración de Servicios (builder.Services) ---
+// Esta sección configura los servicios que la aplicación utilizará e inyectará (IoC Container).
 
-// 1. Agregar servicios para MVC con soporte para vistas
+// Agrega servicios para MVC con soporte para controladores y vistas.
 builder.Services.AddControllersWithViews();
 
-// Agregar DbContext con la cadena de conexi�n desde appsettings.json
+// Configura el DbContext de Entity Framework Core para conectarse a SQL Server.
+// La cadena de conexión se lee desde el archivo de configuración (appsettings.json).
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Registra la implementación de UnitOfWork como un servicio con ámbito de petición.
+builder.Services.AddScoped<UnitOfWork>();
 
-// Registro del UnitOfWork como servicio con �mbito
-builder.Services.AddScoped<UnitOfWork>(); // Aseg�rate de que UnitOfWork est� correctamente definido e implementado
-
-// Registro de Identity (AHORA DESCOMENTADO Y COMPLETO)
+// Configura e integra ASP.NET Core Identity para la gestión de usuarios.
+// Se utiliza la entidad de usuario personalizada 'Usuario' y el rol 'IdentityRole<int>'.
+// Se especifica que la gestión de datos de Identity se realice a través de Entity Framework usando ApplicationDbContext.
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
+    // Configuración de requisitos de contraseña para mayor seguridad.
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
-    // A�adir otras opciones como bloqueo de cuentas, confirmaci�n de email, etc.
-    options.SignIn.RequireConfirmedAccount = false; // Para simplificar en el taller si no quieres confirmaci�n por email
+    // Configuración de opciones de inicio de sesión (ej. no requerir email confirmado para iniciar sesión).
+    options.SignIn.RequireConfirmedAccount = false;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>() // Conecta Identity con tu DbContext
-.AddDefaultTokenProviders(); // Necesario para tokens de restablecimiento de contrase�a, etc.
+.AddEntityFrameworkStores<ApplicationDbContext>() // Configura el almacenamiento de Identity usando EF Core y ApplicationDbContext.
+.AddDefaultTokenProviders(); // Agrega proveedores de tokens predeterminados (para resetear contraseña, etc.).
 
-// Configurar cookies de autenticaci�n (AHORA CON RUTAS M�S COMUNES PARA SCAFFOLDING DE IDENTITY)
+// Configura las cookies de autenticación.
+// Se definen rutas personalizadas para login y acceso denegado, nombre de la cookie, y tiempo de expiración.
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    // Estas son las rutas predeterminadas generadas por el scaffolding de Identity.
-    // Si no usas el scaffolding o tienes rutas personalizadas, aj�stalas.
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    // options.LogoutPath = "/Identity/Account/Logout"; // Opcional, ya que Logout se maneja con POST
-    options.Cookie.Name = "SggAppAuthCookie"; // Nombre de la cookie
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Duraci�n de la sesi�n
-    options.SlidingExpiration = true; // Refrescar la cookie si se usa antes de la mitad de su tiempo
+    options.LoginPath = "/Identity/Account/Login"; // Define la ruta de la página de inicio de sesión.
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Define la ruta para acceso denegado.
+    options.Cookie.Name = "SggAppAuthCookie"; // Establece el nombre de la cookie de autenticación.
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Define la duración de la sesión de la cookie.
+    options.SlidingExpiration = true; // Permite que la cookie se refresque en cada petición.
 });
 
-// Registro de repositorios
+// Registra los repositorios específicos de la capa DAL como servicios con ámbito de petición.
+// Esto permite que sean inyectados en los servicios de la BLL.
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<GastoRepository>();
 builder.Services.AddScoped<CategoriaRepository>();
@@ -61,76 +65,76 @@ builder.Services.AddScoped<MonedaRepository>();
 builder.Services.AddScoped<PresupuestoRepository>();
 builder.Services.AddScoped<TipoCambioRepository>();
 
-// Registro de servicios
+// Registra las implementaciones de los servicios de la capa BLL como servicios con ámbito de petición.
+// Esto permite que las interfaces de servicio sean inyectadas en los controladores u otros servicios.
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IGastoService, GastoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IMonedaService, MonedaService>();
 builder.Services.AddScoped<IPresupuestoService, PresupuestoService>();
 builder.Services.AddScoped<ITipoCambioService, TipoCambioService>();
-builder.Services.AddRazorPages();
-builder.Services.AddTransient<IEmailSender, EmailSender>(); 
 
-// Configurar AutoMapper (AHORA DESCOMENTADO)
-// Aseg�rate de que tu MappingProfile.cs est� en SggApp.MappingProfiles
-// Y que el 'using SggApp.MappingProfiles;' est� al principio del archivo.
+// Agrega servicios para Razor Pages.
+builder.Services.AddRazorPages();
+
+// Registra un servicio de envío de correo electrónico como transitorio (se crea una nueva instancia por cada solicitud).
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+// Configura AutoMapper para el mapeo automático entre entidades y ViewModels.
+// Se busca el perfil de mapeo (MappingProfile) en el ensamblado actual.
 builder.Services.AddAutoMapper(typeof(SggApp.MappingProfiles.MappingProfile).Assembly);
 
-// Configuraci�n para Minimal APIs / OpenAPI (NO REQUERIDO EN PROYECTOS MVC PUROS)
-// Si tu proyecto es solo MVC con vistas, puedes comentar o eliminar las siguientes l�neas si no las usas:
-builder.Services.AddEndpointsApiExplorer(); // Necesario para OpenAPI
-builder.Services.AddSwaggerGen(); // Necesario para Swagger UI
+// --- Configuración de Pipeline de Solicitudes HTTP (app.Use...) ---
+// Esta sección define la secuencia de middlewares que procesarán cada solicitud HTTP.
 
-
+// Construye la aplicación web.
 var app = builder.Build();
 
-// --- CONFIGURACI�N DEL PIPELINE DE SOLICITUDES HTTP (app.Use...) ---
-
-// Configurar el pipeline para desarrollo (p�gina de excepciones detallada)
+// Configura el pipeline de solicitudes HTTP para el entorno de desarrollo.
 if (app.Environment.IsDevelopment())
 {
-    // app.MapOpenApi(); // Mapea los endpoints de OpenAPI/Swagger en desarrollo (si los usas)
-    app.UseDeveloperExceptionPage(); // Muestra errores detallados en desarrollo
-    app.UseSwagger(); // Habilita Swagger UI en desarrollo (si lo usas)
-    app.UseSwaggerUI(); // Habilita Swagger UI en desarrollo (si lo usas)
+    // Muestra una página de excepciones detallada en caso de errores.
+    app.UseDeveloperExceptionPage();
+    // Habilita middleware para servir la especificación Swagger generada.
+    //app.UseSwagger();
+    // Habilita middleware para servir la interfaz de usuario de Swagger (Swagger UI).
+    //app.UseSwaggerUI();
 }
+// Configura el pipeline de solicitudes HTTP para entornos que no son de desarrollo (producción, staging, etc.).
 else
 {
-    // Configuraci�n para producci�n
-    app.UseExceptionHandler("/Home/Error"); // Redirige a una p�gina de error en producci�n
-    // El valor predeterminado HSTS es 30 d�as. Puedes que desee cambiar esto para escenarios de producci�n.
-    app.UseHsts(); // Habilita HSTS
+    // Configura un manejador de excepciones para redirigir a una página de error genérica.
+    app.UseExceptionHandler("/Home/Error");
+    // Agrega el middleware HSTS (HTTP Strict Transport Security) para forzar conexiones HTTPS.
+    app.UseHsts();
 }
 
-// Middleware de redirecci�n HTTPS
+// Agrega el middleware para redirigir solicitudes HTTP a HTTPS.
 app.UseHttpsRedirection();
 
-// Middleware para servir archivos est�ticos (CSS, JS, im�genes, etc.)
+// Habilita el middleware para servir archivos estáticos desde wwwroot (CSS, JS, imágenes).
 app.UseStaticFiles();
 
-// 2. Middleware de enrutamiento - �CRUCIAL PARA MVC!
-app.UseRouting(); // Debe ir antes de UseAuthentication y UseAuthorization
+// Agrega el middleware de enrutamiento para que la aplicación pueda hacer coincidir URLs con endpoints.
+// Este middleware debe ir antes de UseAuthentication y UseAuthorization.
+app.UseRouting();
 
-// Middleware de autenticaci�n (AHORA DESCOMENTADO) - �MUY IMPORTANTE! Debe ir entre UseRouting y UseAuthorization
+// Agrega el middleware de autenticación, necesario para identificar al usuario actual.
+// Debe ir después de UseRouting y antes de UseAuthorization.
 app.UseAuthentication();
 
-// 3. Middleware de autorizaci�n (AHORA DESCOMENTADO)
+// Agrega el middleware de autorización, que verifica si el usuario actual tiene permiso para acceder a un recurso.
+// Debe ir después de UseAuthentication.
 app.UseAuthorization();
 
-// Mapea las Razor Pages de Identity (AHORA DESCOMENTADO)
+// Mapea los endpoints para las Razor Pages.
 app.MapRazorPages();
 
-// Configurar el ruteo para controladores MVC 
+// Mapea los endpoints para los controladores MVC usando el patrón de ruta predeterminado.
+// Define la estructura URL básica de la aplicación ({controlador}/{acción}/{id?}).
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-// Si tienes Minimal APIs (como WeatherForecast), puedes mapearlas aqu� tambi�n
-// app.MapGet("/weatherforecast", () => { ... }); // Si necesitas mantener este endpoint
 
-app.Run(); // Inicia la aplicaci�n
-
-// Definici�n de WeatherForecast (SI LA NECESITAS, si no, elim�nala)
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }
+// Inicia la aplicación web.
+app.Run();
